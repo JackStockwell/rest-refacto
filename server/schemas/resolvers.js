@@ -61,13 +61,13 @@ const resolvers = {
             }
         },
 
-        // Takes the book to be saved to the db, find's user based on JWT login token.
-        saveBook: async (parent, { bookToSave }, context) => {
+        // Takes the book to be saved as args to the db, find's user based on JWT login token.
+        saveBook: async (parent, { bookData }, context) => {
             try {
                 // Find user with context.id, add's book parsed to the sub-docs. 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $addToSet: { savedBooks: bookToSave } },
+                    { $addToSet: { savedBooks: args } },
                     { new: true, runValidators: true }
                   );
 
@@ -90,6 +90,9 @@ const resolvers = {
                 if (!updatedUser) {
                     throw new AuthenticationError('Incorrect codentials, please login and refresh the page.');
                 }
+
+                return { updatedUser }
+
             } catch(err) {
                 throw new AuthenticationError(err)
             }
