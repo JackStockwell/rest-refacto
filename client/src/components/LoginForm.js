@@ -2,13 +2,22 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { loginUser } from '../utils/API';
+// Imports for GraphQL
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations'
+
+// Auth JWT Import
 import Auth from '../utils/auth';
 
 const LoginForm = () => {
+
+  // States
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+
+  // Usese the login_user mutation, calls upon the loginUser
+  const [loginUser] = useMutation(LOGIN_USER)
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -26,13 +35,15 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await loginUser(userFormData);
+      // 
+      const { data } = await loginUser({
+        variables: { ...userFormData }
+      })
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      Auth.login(data.loginUser.token)
 
-      const { token, user } = await response.json();
+      const { token, user } = await data.json();
+  
       console.log(user);
       Auth.login(token);
     } catch (err) {

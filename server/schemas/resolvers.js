@@ -55,7 +55,7 @@ const resolvers = {
                 const token = signToken(user)
 
                 // Return user and token to front end.
-                return { user, token }
+                return { token, user }
             } catch (err) {
                 throw new AuthenticationError(err)
             }
