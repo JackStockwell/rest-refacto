@@ -67,7 +67,7 @@ const resolvers = {
                 // Find user with context.id, add's book parsed to the sub-docs. 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $addToSet: { savedBooks: args } },
+                    { $addToSet: { savedBooks: bookData } },
                     { new: true, runValidators: true }
                   );
 
@@ -83,7 +83,7 @@ const resolvers = {
                 // Find user with JWT context id, pull's from savedBooks the book id parsed.
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: { bookId: params.bookId } } },
+                    { $pull: { savedBooks: { bookId: bookId } } },
                     { new: true }
                 );
 
