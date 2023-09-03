@@ -9,6 +9,7 @@ const resolvers = {
         me: async (parent, args, context) => {
             if (context.user) {
                 const userData = await findOne({ _id: context.user._id })
+                .populate('books')
                     // Remove password from data.
                     .select('-__v -password');
 
@@ -63,18 +64,24 @@ const resolvers = {
 
         // Takes the book to be saved as args to the db, find's user based on JWT login token.
         saveBook: async (parent, { bookData }, context) => {
-            try {
-                // Find user with context.id, add's book parsed to the sub-docs. 
-                const updatedUser = await User.findOneAndUpdate(
-                    { _id: context.user._id },
-                    { $addToSet: { savedBooks: bookData } },
-                    { new: true, runValidators: true }
-                  );
 
-                  return { updatedUser }
-            } catch(err) {
-                throw new AuthenticationError(err)
+            if (context.user) {
+                try {
+                    // Find user with context.id, add's book parsed to the sub-docs. 
+                    const updatedUser = await User.findOneAndUpdate(
+                        { _id: context.user._id },
+                        { $addToSet: { savedBooks: { bookData } } },
+                        { new: true, runValidators: true }
+                      );
+    
+                      return { updatedUser }
+                } catch(err) {
+                    throw new AuthenticationError(err)
+                }
             }
+            
+            throw new AuthenticationError('You need to be logged in!')
+
         },
 
         // Takes the book id and user, deletes the book from their docs.

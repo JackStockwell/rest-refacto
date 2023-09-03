@@ -36,12 +36,12 @@ const LoginForm = () => {
 
     try {
       // Sends a request to API to login a user with the formdata parsed.
-      const { token } = await loginUser({
+      const { data } = await loginUser({
         variables: { ...userFormData }
       })
   
       // Create JWT token
-      Auth.login(token);
+      Auth.login(data.loginUser.token);
 
     } catch (err) {
       console.error(err);

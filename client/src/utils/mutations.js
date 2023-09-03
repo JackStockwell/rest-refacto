@@ -36,9 +36,8 @@ export const LOGIN_USER = gql`
 
 // Save book mutation, returns user with saved books array.
 export const SAVE_BOOK = gql`
-    mutation SaveBook($bookId: String!, $authors: Authors!, $title: String!, $description: String!, $image: String!) {
-        saveBook(bookId: $bookId, authors: $authors, title: $title, description: $description, image: $image) {
-            _id
+    mutation SaveBook($bookData: BookInput) {
+        saveBook(bookData: $bookData) {
             username
             savedBooks {
                 _id
