@@ -5,12 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "watch": "nodemon server.js"
+    "watch": "nodemon server.js",
+    "old": "nodemon old.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-express": "^3.12.1",
     "bcrypt": "^4.0.1",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
