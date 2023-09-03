@@ -90,7 +90,7 @@ const resolvers = {
                 if (!updatedUser) {
                     throw new AuthenticationError('Incorrect codentials, please login and refresh the page.');
                 }
-
+                // Returns the updated user.
                 return { updatedUser }
 
             } catch(err) {
