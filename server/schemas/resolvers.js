@@ -1,19 +1,17 @@
 const { AuthenticationError } = require('apollo-server-express')
 const { User } = require('../models');
 const { signToken } = require('../utils/auth');
-const { findOneAndUpdate } = require('../models/User');
 
 const resolvers = {
     Query: {
         // Requires context so 'auth' to see own profile.
         me: async (parent, args, context) => {
             if (context.user) {
-                const userData = await findOne({ _id: context.user._id })
-                .populate('books')
-                    // Remove password from data.
-                    .select('-__v -password');
+                const userData = await User.findOne({ _id: context.user._id })
+                    // Populate the books sub-docs
+                    .populate('savedBooks')
 
-                    return userData
+                    return userData;
             }
             // If no context is sent, throws an error. 
             throw new AuthenticationError('You need to be logged in!');
@@ -70,11 +68,15 @@ const resolvers = {
                     // Find user with context.id, add's book parsed to the sub-docs. 
                     const updatedUser = await User.findOneAndUpdate(
                         { _id: context.user._id },
-                        { $addToSet: { savedBooks: { bookData } } },
-                        { new: true, runValidators: true }
-                      );
+                        { $addToSet: { 
+                            savedBooks: bookData
+                        }},
+                        { new: true }
+                    )
+                    .populate('savedBooks');
     
-                      return { updatedUser }
+                      return updatedUser
+                      
                 } catch(err) {
                     throw new AuthenticationError(err)
                 }
@@ -98,7 +100,7 @@ const resolvers = {
                     throw new AuthenticationError('Incorrect codentials, please login and refresh the page.');
                 }
                 // Returns the updated user.
-                return { updatedUser }
+                return updatedUser
 
             } catch(err) {
                 throw new AuthenticationError(err)

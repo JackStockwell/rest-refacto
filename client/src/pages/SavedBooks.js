@@ -18,9 +18,17 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   const { loading, data } = useQuery(QUERY_ME);
+  
+  const [ deleteBook ] = useMutation(DELETE_BOOK)
 
-  const userData = data?.me || { };
-
+  // if data isn't here yet, say so
+  if (loading) {
+    return <h2>LOADING...</h2>;
+  }
+  
+  // Loads the data into by quering the data using the 'me' query
+  const userData = data?.me || [];
+  
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -29,16 +37,24 @@ const SavedBooks = () => {
       return false;
     }
 
+    try {
+
+      await deleteBook({
+        variables: {bookId}
+      })
+
+      removeBookId(bookId)
+
+    } catch (err) {
+      console.log(err)
+    }
   };
 
   // if data isn't here yet, say so
-  if (loading) {
-    return <h2>LOADING...</h2>;
-  }
 
   return (
     <>
-      <div fluid className="text-light bg-dark p-5">
+      <div fluid="true" className="text-light bg-dark p-5">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
@@ -52,8 +68,8 @@ const SavedBooks = () => {
         <Row>
           {userData.savedBooks.map((book) => {
             return (
-              <Col md="4">
-                <Card key={book.bookId} border='dark'>
+              <Col key={book.bookId} md="4">
+                <Card border='dark'>
                   {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
                   <Card.Body>
                     <Card.Title>{book.title}</Card.Title>
