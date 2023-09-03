@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 
 // GraphQL imports.
-import { useQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations'
 
 // Other utils
@@ -70,9 +70,9 @@ const SearchBooks = () => {
   // create function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
-    const bookData = searchedBooks.find((book) => book.bookId === bookId);
+    const bookInput = searchedBooks.find((book) => book.bookId === bookId);
 
-    console.log(bookData)
+    console.log(bookInput)
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
@@ -81,14 +81,15 @@ const SearchBooks = () => {
     }
 
     try {
-      const data = await saveBook({
-        variables: { bookToSave: bookData }
+
+      await saveBook({
+        variables: {
+          bookData: bookInput
+        }
       });
 
-      console.log(data)
-
       // if book successfully saves to user's account, save book id to state
-      setSavedBookIds([...savedBookIds, bookData.bookId]);
+      setSavedBookIds([...savedBookIds, bookInput.bookId]);
     } catch (err) {
       console.error(err);
     }
