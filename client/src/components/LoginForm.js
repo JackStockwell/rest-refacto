@@ -35,17 +35,14 @@ const LoginForm = () => {
     }
 
     try {
-      // 
-      const { data } = await loginUser({
+      // Sends a request to API to login a user with the formdata parsed.
+      const { token } = await loginUser({
         variables: { ...userFormData }
       })
-
-      Auth.login(data.loginUser.token)
-
-      const { token, user } = await data.json();
   
-      console.log(user);
+      // Create JWT token
       Auth.login(token);
+
     } catch (err) {
       console.error(err);
       setShowAlert(true);
