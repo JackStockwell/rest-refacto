@@ -44,14 +44,17 @@ const SearchBooks = () => {
     }
 
     try {
+      // Query googlebooks API
       const response = await searchGoogleBooks(searchInput);
 
+      // Error handler
       if (!response.ok) {
         throw new Error('something went wrong!');
       }
-
+      // Create an items object with the search results
       const { items } = await response.json();
 
+      // Iterate through the items, mapping each book's data to the object.
       const bookData = items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors || ['No author to display'],
@@ -75,12 +78,13 @@ const SearchBooks = () => {
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
+    // Error check to see if error is logged in.
     if (!token) {
       return false;
     }
 
     try {
-
+      // Call upon saveBook, parse the bookinput obj as bookdata.
       await saveBook({
         variables: { bookData: bookInput }
       });

@@ -38,19 +38,18 @@ const SavedBooks = () => {
     }
 
     try {
-
+      // Query mutation to delete the parsed bookId
       await deleteBook({
         variables: {bookId}
       })
 
+      // Calls upon removeBookId, removes it from local storage.
       removeBookId(bookId)
 
     } catch (err) {
       console.log(err)
     }
   };
-
-  // if data isn't here yet, say so
 
   return (
     <>
