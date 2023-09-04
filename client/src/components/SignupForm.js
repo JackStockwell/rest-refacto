@@ -36,12 +36,12 @@ const SignupForm = () => {
 
     try {
       // Sends a mutation request to API to create a new user with the form data parsed
-      const { token } = await createUser({
+      const { data } = await createUser({
         variables: { ...userFormData }
       });
-
+      
       // Create JWT token
-      Auth.login(token)
+      Auth.login(data.createUser.token)
 
     } catch (err) {
       console.error(err);
