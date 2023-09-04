@@ -20,7 +20,7 @@ const httpLink = createHttpLink({
 
 // Middleware that will attach the JWT token to every request as an `authorization
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('id_token'); 
+  const token = localStorage.getItem('id_token');
 
   return {
     headers: {
