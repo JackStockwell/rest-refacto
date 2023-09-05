@@ -72,7 +72,7 @@ const resolvers = {
                         { $addToSet: { 
                             savedBooks: bookData
                         }},
-                        { new: true, runValidators: true }
+                        { new: true }
                     )
                     .populate('savedBooks');
     
